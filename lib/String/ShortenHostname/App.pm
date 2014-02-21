@@ -27,6 +27,12 @@ has '+domain_edge' => (
 	documentation => "edge string for truncation of domain",
 );
 
+has '+cut_middle' => (
+	traits => ['Getopt'],
+	cmd_aliases => "m",
+	documentation => "dont truncate, cut in the middle of domain",
+);
+
 has '+force' => (
 	traits => ['Getopt'],
 	cmd_aliases => "f",
