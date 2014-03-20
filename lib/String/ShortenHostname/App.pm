@@ -1,9 +1,23 @@
 package String::ShortenHostname::App;
+# ABSTRACT: class for wrapping getopt options to the class interface
 
 use Moose;
 use IO::Handle;
 
 # VERSION
+
+=head1 SYNOPSIS
+
+  use String::ShortenHostname::App;
+
+  my $app = String::ShortenHostname::App->new_with_options();
+  $app->run;
+
+=head1 SEE ALSO
+
+L<shorten_hostname>
+
+=cut
 
 extends 'String::ShortenHostname';
 with 'MooseX::Getopt';

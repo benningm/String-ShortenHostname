@@ -1,10 +1,69 @@
-use strict;
-use warnings;
 package String::ShortenHostname;
+# ABSTRACT: tries to shorten hostnames while keeping them meaningful
+
+use Moose;
 
 # VERSION
 
-use Moose;
+=head1 SYNOPSIS
+
+  use String::ShortenHostname;
+
+  my $sh = String::ShortenHostname->new( length => 20 );
+  $sh->shorten('zumsel.haushaltswarenabteilung.einzelhandel.de');
+  # zumsel.hau~g.ein~l~>
+
+  $sh->cut_middle(0);
+  $sh->shorten('zumsel.haushaltswarenabteilung.einzelhandel.de');
+  # zumsel.haus~.einz~~>
+
+  $sh->force(0);
+  $sh->shorten('zumsel.haushaltswarenabteilung.einzelhandel.de');
+  # zumsel.haus~.einz~.de
+
+  $sh->domain_edge(undef);
+  $sh->shorten('zumsel.haushaltswarenabteilung.einzelhandel.de');
+  # zumsel.haush.einze.de
+
+=head1 DESCRIPTION
+
+String::ShortenHostname will try to shorten the hostname string to the length specified.
+It will cut each domain part to a given length from right to left till the string is
+short enough or the end of the domain has been reached.
+
+Options:
+
+=over
+
+=item length (required)
+
+The desired maximum length of the hostname string.
+
+=item keep_digits_per_domain (default: 5)
+
+Cut each domain part at this length.
+
+=item domain_edge (default: '~')
+
+If defined this string will be used to replace the end of each domain truncated to
+indicate that it was truncated.
+
+=item cut_middle (default: 1)
+
+Will do the cut one character before the last.
+
+=item force (default: 1)
+
+If specified the module will force the length by cutting the result string.
+
+=item force_edge (default: '~>')
+
+If defined this string will be used to replace the end of the string to
+indicate that it was truncated.
+
+=back
+
+=cut
 
 has 'length' => ( is => 'rw', isa => 'Int', required => 1 );
 has 'keep_digits_per_domain' => ( is => 'rw', isa => 'Int', default => 5 );
@@ -67,75 +126,3 @@ sub shorten {
 
 1;
 
-__END__
-
-=head1 NAME
-
-String::ShortenHostname - tries to shorten hostnames while keeping them meaningful
-
-=head1 SYNOPSIS
-
-  use String::ShortenHostname;
-
-  my $sh = String::ShortenHostname->new( length => 20 );
-  $sh->shorten('zumsel.haushaltswarenabteilung.einzelhandel.de');
-  # zumsel.hau~g.ein~l~>
-
-  $sh->cut_middle(0);
-  $sh->shorten('zumsel.haushaltswarenabteilung.einzelhandel.de');
-  # zumsel.haus~.einz~~>
-
-  $sh->force(0);
-  $sh->shorten('zumsel.haushaltswarenabteilung.einzelhandel.de');
-  # zumsel.haus~.einz~.de
-
-  $sh->domain_edge(undef);
-  $sh->shorten('zumsel.haushaltswarenabteilung.einzelhandel.de');
-  # zumsel.haush.einze.de
-
-=head1 DESCRIPTION
-
-String::ShortenHostname will try to shorten the hostname string to the length specified.
-It will cut each domain part to a given length from right to left till the string is
-short enough or the end of the domain has been reached.
-
-Options:
-
-=over
-
-=item length (required)
-
-The desired maximum length of the hostname string.
-
-=item keep_digits_per_domain (default: 5)
-
-Cut each domain part at this length.
-
-=item domain_edge (default: '~')
-
-If defined this string will be used to replace the end of each domain truncated to
-indicate that it was truncated.
-
-=item cut_middle (default: 1)
-
-Will do the cut one character before the last.
-
-=item force (default: 1)
-
-If specified the module will force the length by cutting the result string.
-
-=item force_edge (default: '~>')
-
-If defined this string will be used to replace the end of the string to
-indicate that it was truncated.
-
-=back
-
-=head1 COPYRIGHT
-
-Copyright 2014 Markus Benning <me@w3r3wolf.de>
-
-This library is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself.
-
-=cut
